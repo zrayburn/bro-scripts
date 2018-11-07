@@ -1,4 +1,4 @@
-##! HTTP brute force attack detection in HTTP 
+##! HTTP brute force attack detection in HTTP
 ## This script is compatible with the Bro v2.1 Metric Framework
 
 @load base/frameworks/notice
@@ -26,7 +26,7 @@ export {
 	redef enum Tags += {
 	## Indicator of a HTTP Brute Froce Attack.
 	HTTP_404_ALERT,
-	
+
 	};
 
 	## Defines the threshold that determines if client side HTTP 404 errors
@@ -37,7 +37,7 @@ export {
 	## have crossed into the abnormal boundry
 	const http_resp_404_threshold = 100 &redef;
 
-	## Interval at which to watch for the 
+	## Interval at which to watch for the
 	## :bro:id:`HTTP::http_client_404_threshold` variable to be crossed
 	## At the end of each interval the counter is reset.
 	const http_404_interval = 5min &redef;
@@ -56,8 +56,8 @@ export {
 event bro_init() &priority=3
 	{
 	# Add filters to the metrics so that the metrics framework knows how to
-	# determien when it looks like an actual attack and how to respond when
-	# thresholds are corssed.
+	# determine when it looks like an actual attack and how to respond when
+	# thresholds are crossed.
 
 	Metrics::add_filter(HTTP_BF_ATTACKER, [$log=F,
 										   $notice_threshold=http_orig_404_threshold,
@@ -71,19 +71,19 @@ event bro_init() &priority=3
 
 event http_begin_entity(c:connection, is_orig: bool)
 	{
-	# If something sent by the origionator bail out
+	# If something sent by the originator bail out
 
 	if (is_orig)
 		return;;
 
 	# Headers are not processed yet
-#   if (!(c$http?$status_code) || !(c$http?$host) 
-#	|| (c$http$status_code in http_status_code_whitelist) 
-#	|| (c$http$host in http_resp_whitelist)) 
+#   if (!(c$http?$status_code) || !(c$http?$host)
+#	|| (c$http$status_code in http_status_code_whitelist)
+#	|| (c$http$host in http_resp_whitelist))
 
-    if (!(c$http?$status_code) || !(c$http?$host)) 
+    if (!(c$http?$status_code) || !(c$http?$host))
         return;
-    
+
     # Whitelist certain URI's; especially the favicon.ico which is commonly not setup
     if ((c$http?$uri) && (c$http$uri in http_uri_whitelist))
 	   	return;
